@@ -1,9 +1,6 @@
 let audio, amp, fft
 
 let isPressed = false
-// const bins = 64
-// let binWidth 
-// let peakDetect
 
 let myShader 
 
@@ -14,9 +11,25 @@ function preload() {
   audio = loadSound('audio/Are you gonna dance or what.mp3')
   myShader = loadShader('shader/vertex.vert', 'shader/fragment.frag')
   frameRate(60)
+
 }
 
 function setup() {
+
+  const hihat_z = new Audio('./audio/hihat_z.wav')
+  const kick_x = new Audio('./audio/kick_x.wav')
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key == 'z') {
+      console.log("z key is pressed")
+      hihat_z.play()
+    }
+    else if (e.key == 'x') {
+      console.log("x key is pressed")
+      kick_x.play()
+    }
+  })
+
   createCanvas(windowWidth, windowHeight, WEBGL)
 
   shader(myShader)
@@ -35,14 +48,11 @@ function setup() {
 }
 
 function draw() {
+  
   background(200, 200, 234, 200) 
-  // background(0)
   
   drawingContext.filter = 'blur(px)'
 
-  console.log(audio.currentTime())
-
-  // stroke(255)
 
   fft.analyze()
 
@@ -65,22 +75,7 @@ function draw() {
 
   const mapF = map(freq, 0, 1, 0, 20)
   const mapV = map(volume, 0, 0.2, 0, 0.5)
-  // translate(0, height / 2)
-  // rect(0, 0, mapW, mapW)
-  console.log()
-  // const waveform = audio.getPeaks()
 
-  // for(let i = 0; i < waveform.length; i++){
-  //   line(i, waveform[i] * 100, i, waveform[i] * -100)
-  // }
-
-  // const waveform = fft.waveform()
-
-  // for(let i = 0; i < waveform.length; i++){
-  //   const x = map(i, 0, waveform.length, 0, width)
-  //   const y = map(waveform[i], -1, 1, 0, height)
-  //   point(x, y) 
-  // } 
   myShader.setUniform('uTime', frameCount)
 
   myShader.setUniform('uFreq', mapF)
@@ -101,8 +96,3 @@ function mousePressed() {
     audio.loop()
   }
 }
-
-
-// function peakDetected() {
-//   console.log('peak detected')
-// }
